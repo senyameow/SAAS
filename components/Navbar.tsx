@@ -3,7 +3,7 @@ import { Button } from './ui/button'
 
 const Navbar = () => {
     return (
-        <div className="fixed h-16 border border-black top-0 w-full px-12 py-2 flex justify-between items-center">
+        <div className="fixed h-16 top-0 w-full px-12 py-2 flex justify-between items-center">
             <div>
                 SenyameowDance
             </div>
