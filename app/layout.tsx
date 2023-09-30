@@ -22,7 +22,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <Trps>
-        <body className={cn(`min-h-screen grainy antialiased`, inter.className)}>
+        <body className={cn(`grainy min-h-screen h-full antialiased`, inter.className)}>
 
           <Navbar />
           {children}

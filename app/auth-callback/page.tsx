@@ -25,7 +25,7 @@ const page = () => {
     })
 
     return (
-        <div className='flex items-center justify-center h-screen'>
+        <div className='flex items-center justify-center h-full'>
             <div className='flex flex-col items-center gap-2'>
                 <Loader2 className='animate-spin w-16 h-16 text-zinc-800' />
                 <span className='text-4xl font-semibold'>Setting up your account...</span>
