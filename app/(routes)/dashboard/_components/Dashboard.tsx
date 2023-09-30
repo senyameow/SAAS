@@ -7,17 +7,20 @@ import { Ghost, Loader2 } from 'lucide-react'
 import React from 'react'
 import { Skeleton } from '@/components/ui/skeleton'
 import File from './File'
+import { useModalStore } from '@/hooks/use-modal-store'
 
 const Dashboard = () => {
 
     const { data, isLoading } = trpc.getUserFiles.useQuery()
+
+    const { onOpen } = useModalStore()
 
     return (
         <MaxWidthWrapper className='mt-24 sm:mt-36 w-full h-full'>
             <div className='flex flex-col gap-6 items-start w-full h-full'>
                 <div className='flex items-center justify-between w-full '>
                     <h1 className='text-4xl sm:text-5xl lg:text-6xl font-bold'>My Files</h1>
-                    <Button className='text-lg'>
+                    <Button onClick={() => onOpen(`uploadModal`, {})} className='text-lg'>
                         Upload PDF
                     </Button>
                 </div>

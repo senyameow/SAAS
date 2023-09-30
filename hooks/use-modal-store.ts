@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 
-export type ModalType = 'DeleteChapter' | 'DeleteCourse' | 'UsersModal'
+export type ModalType = 'uploadModal'
 
 interface ModalData {
 }
