@@ -25,7 +25,7 @@ const File = ({ name, url, id, created_at }: FileProps) => {
     })
 
     return (
-        <div className='w-full borde border-black/60 hover:shadow-md transition rounded-xl'>
+        <div className='w-full border border-black/30 hover:shadow-md transition rounded-xl'>
             <div className='flex flex-col gap-2 px-6 pt-6 pb-4 w-full h-full'>
                 <Link href={`/dashboard/${id}`} className='flex flex-row items-center gap-6 '>
                     <div className='w-10 h-10 rounded-full bg-blue-400' />
