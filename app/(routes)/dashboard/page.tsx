@@ -7,7 +7,9 @@ const page = async () => {
     const { getUser } = getKindeServerSession();
     const user = getUser();
 
-    if (!user.id || !user) redirect(`/auth-callback?origin=dashboard`)
+    if (!user.id || !user) {
+        redirect(`/auth-callback?origin=dashboard`)
+    }
 
     return (
         <div className='pt-16'>{user.id}</div>
