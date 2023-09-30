@@ -9,7 +9,7 @@ const Dashboard = () => {
             <div className='flex flex-col gap-6 items-start w-full h-full'>
                 <div className='flex items-center justify-between w-full '>
                     <h1 className='text-4xl sm:text-5xl lg:text-6xl font-bold'>My Files</h1>
-                    <Button>
+                    <Button className='text-lg'>
                         Upload PDF
                     </Button>
                 </div>
