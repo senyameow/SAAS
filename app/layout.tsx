@@ -5,6 +5,7 @@ import type { Metadata } from 'next'
 import { Inter } from 'next/font/google'
 import Navbar from '@/components/Navbar'
 import { ClerkProvider } from '@clerk/nextjs'
+import Trps from '../providers/trps'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -20,13 +21,14 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
+      <Trps>
+        <body className={cn(`min-h-screen grainy antialiased`, inter.className)}>
 
-      <body className={cn(`min-h-screen grainy antialiased`, inter.className)}>
+          <Navbar />
+          {children}
 
-        <Navbar />
-        {children}
-
-      </body>
+        </body>
+      </Trps>
 
     </html>
   )
