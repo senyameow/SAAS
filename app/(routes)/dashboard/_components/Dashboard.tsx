@@ -24,7 +24,7 @@ const Dashboard = () => {
                 <Separator className='w-full' />
 
                 {data && data.length > 0 ? (
-                    <ul className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
+                    <ul className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full'>
                         {data.map(file => (
                             <File key={file.id} name={file.name} id={file.id} url={file.url} created_at={file.created_at} />
                         ))}
