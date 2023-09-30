@@ -18,4 +18,24 @@ model User {
   stripeSubscriptionId   String?   @unique
   stripePaymentId        String?
   stripeCurrentPeriodEnd DateTime?
+
+  File File[]
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+}
+
+model File {
+  id   String @id @default(uuid())
+  name String
+  url  String @db.Text
+  key  String
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id])
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@index([userId])
 }
