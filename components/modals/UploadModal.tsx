@@ -71,19 +71,24 @@ const UploadModal = () => {
     return (
         <Modal title='drag and drop Your pdf file' description='our AI will analize it in seconds' isOpen={isModalOpen} onClose={onClose}>
             <Dropzone multiple={false} onDrop={async (acceptedFile) => {
-                setIsUploading(true)
-                const progressInterval = startProgress()
+                try {
+                    setIsUploading(true)
+                    const progressInterval = startProgress()
 
-                const res = await startUpload(acceptedFile)
+                    const res = await startUpload(acceptedFile)
 
-                if (!res || res.length === 0) toast.error(`something went wrong`)
-                const [fileRes] = res!
-                const key = fileRes.key
-                if (!key) toast.error(`something went wrong`)
+                    if (!res || res.length === 0) toast.error(`something went wrong`)
+                    const [fileRes] = res!
+                    const key = fileRes.key
+                    if (!key) toast.error(`something went wrong`)
 
-                clearInterval(progressInterval)
+                    clearInterval(progressInterval)
 
-                getFile({ key })
+                    getFile({ key })
+                } catch (error) {
+                    toast.error(`something went wrong`)
+                }
+
             }} >
                 {({ getRootProps, getInputProps, acceptedFiles }) => (
                     <div {...getRootProps()} className='h-[300px] border border-dashed rounded-lg'>
