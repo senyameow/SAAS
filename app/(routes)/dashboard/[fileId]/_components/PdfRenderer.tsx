@@ -1,6 +1,6 @@
 'use client'
 import { ArrowDown, ArrowUp, ChevronDown, ChevronUp, Loader2 } from 'lucide-react'
-import React, { useState } from 'react'
+import React, { useCallback, useState } from 'react'
 
 import 'react-pdf/dist/Page/AnnotationLayer.css';
 import 'react-pdf/dist/Page/TextLayer.css';
@@ -14,8 +14,12 @@ import { useResizeDetector } from 'react-resize-detector'
 import * as z from 'zod'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Form } from '@/components/ui/form';
 import Zoom from './Zoom';
+
+import SimpleBar from 'simplebar-react'
+
+import QuickPinchZoom, { make3dTransformValue } from "react-quick-pinch-zoom";
+
 
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`
@@ -26,6 +30,11 @@ interface PdfRendererProps {
     name: string;
 }
 
+type onUpdateType = {
+    x: number;
+    y: number;
+    scale: number;
+}
 
 
 const PdfRenderer = ({ url, name }: PdfRendererProps) => {
@@ -67,6 +76,21 @@ const PdfRenderer = ({ url, name }: PdfRendererProps) => {
 
     const [zoom, setZoom] = useState(1)
 
+    const onUpdate = useCallback(({ x, y, scale }: onUpdateType) => {
+        const { current: doc } = ref;
+
+        if (doc) {
+            const value = make3dTransformValue({ x, y, scale });
+
+            console.log(value)
+
+            setZoom((prev) => scale < prev ? prev : scale)
+
+            // doc.style.setProperty("transform", value);
+        }
+    }, []);
+
+
     return (
         <div className='w-full bg-white rounded-md shadow flex flex-col items-center h-full'>
             <div className='h-14 w-full border-b border-zinc-200 flex items-center max-h-screen justify-between px-2'>
@@ -90,20 +114,24 @@ const PdfRenderer = ({ url, name }: PdfRendererProps) => {
                 </div>
             </div>
             <div className='flex-1 w-full max-h-full border border-zinc-200'>
-                <div ref={ref} className='border-b max-h-full'>
-                    <Document file={url} onLoadSuccess={onDocumentLoadSuccess} className={`h-full border-b`} loading={
-                        <div className='flex items-center justify-center max-h-full'>
-                            <Loader2 className='w-6 h-6 animate-spin' />
-                        </div>
-                    }
-                        onError={() => {
-                            toast.error('loading error.. try again')
-                        }}
-                    >
-                        <Page height={height ? height : 1} pageNumber={pageNumber} width={width ? width : 1} />
-                    </Document>
+                <SimpleBar autoHide={false} className='max-h-[calc(100vh-10rem)]'>
+                    <QuickPinchZoom onUpdate={onUpdate}>
+                        <div ref={ref} className='border-b max-h-full'>
+                            <Document file={url} onLoadSuccess={onDocumentLoadSuccess} className={`h-full border-b`} loading={
+                                <div className='flex items-center justify-center max-h-full'>
+                                    <Loader2 className='w-6 h-6 animate-spin' />
+                                </div>
+                            }
+                                onError={() => {
+                                    toast.error('loading error.. try again')
+                                }}
+                            >
+                                <Page scale={zoom} height={height ? height : 1} pageNumber={pageNumber} width={width ? width : 1} />
+                            </Document>
 
-                </div>
+                        </div>
+                    </QuickPinchZoom>
+                </SimpleBar>
             </div>
         </div>
     )

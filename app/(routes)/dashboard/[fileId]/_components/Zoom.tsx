@@ -1,8 +1,8 @@
 'use client'
-import React, { Dispatch, SetStateAction, useState } from 'react'
+import React, { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Button } from '@/components/ui/button';
-import { ChevronDown, Search } from 'lucide-react';
+import { ChevronDown, Loader2, Search } from 'lucide-react';
 
 interface ZoomProps {
     setZoom: Dispatch<SetStateAction<number>>;
@@ -11,6 +11,13 @@ interface ZoomProps {
 
 const Zoom = ({ setZoom, zoom }: ZoomProps) => {
 
+    const [isMounted, setIsMounted] = useState(false)
+
+    useEffect(() => {
+        setIsMounted(true)
+    }, [])
+
+    if (!isMounted) return <Loader2 className='w-4 h-4 animate-spin' />
 
     return (
         <DropdownMenu>

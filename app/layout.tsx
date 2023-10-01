@@ -9,6 +9,8 @@ import Trps from '../providers/trps'
 import { ModalProvider } from '@/providers/ModalProvider'
 import { ToasterProvider } from '@/providers/ToastProvider'
 
+import 'simplebar-react/dist/simplebar.min.css';
+
 
 
 const inter = Inter({ subsets: ['latin'] })
