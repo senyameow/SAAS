@@ -7,6 +7,7 @@ import Navbar from '@/components/Navbar'
 import { ClerkProvider } from '@clerk/nextjs'
 import Trps from '../providers/trps'
 import { ModalProvider } from '@/providers/ModalProvider'
+import { ToasterProvider } from '@/providers/ToastProvider'
 
 
 
@@ -26,6 +27,7 @@ export default function RootLayout({
     <html lang="en">
       <Trps>
         <body className={cn(`grainy min-h-screen h-full antialiased`, inter.className)}>
+          <ToasterProvider />
           <ModalProvider />
           <Navbar />
           {children}

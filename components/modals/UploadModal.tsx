@@ -1,12 +1,16 @@
 'use client'
-import React, { useState } from 'react'
+import React, { useCallback, useState } from 'react'
 import { Modal } from '../ui/Modal'
 import { useModalStore } from '@/hooks/use-modal-store'
 import Dropzone from 'react-dropzone'
 import { Cloud, File, Plus } from 'lucide-react'
 import { Progress } from '../ui/progress'
+import { useUploadThing } from '@/lib/uploadthing'
+import toast from 'react-hot-toast'
+import { File as FileType } from '@prisma/client'
 
 const UploadModal = () => {
+
 
     const [isUploading, setIsUploading] = useState(false)
     const [progress, setProgress] = useState(0)
@@ -28,16 +32,41 @@ const UploadModal = () => {
                 return prev + 5
             })
         }, 500)
+
+        return interval
     }
+
+    const { startUpload, permittedFileInfo } = useUploadThing('FreePlan', {
+        onClientUploadComplete: () => {
+            toast.success(`you successfully uploaded the file!`)
+            setProgress(100)
+            setIsUploading(false)
+        },
+        onUploadError: () => {
+            toast.error(`something went wrong =( `)
+        },
+        onUploadBegin: () => {
+            setIsUploading(true)
+        }
+    })
+
+    // const onDrop = useCallback((acceptedFile: FileType) => {
+    //     startUpload(file)
+    //     setFile(acceptedFile);
+    // }, []);
 
 
     return (
         <Modal title='drag and drop Your pdf file' description='our AI will analize it in seconds' isOpen={isModalOpen} onClose={onClose}>
-            <Dropzone multiple={false} onDragEnter={() => {
-                setIsUploading(false)
-            }} onDrop={(acceptedFile) => {
+            <Dropzone multiple={false} onDrop={async (acceptedFile) => {
                 setIsUploading(true)
-                startProgress()
+                const progressInterval = startProgress()
+
+                const res = await startUpload(acceptedFile)
+
+                if (!res) toast.error(`something went wrong`)
+
+                clearInterval(progressInterval)
             }} >
                 {({ getRootProps, getInputProps, acceptedFiles }) => (
                     <div {...getRootProps()} className='h-[300px] border border-dashed rounded-lg'>
@@ -49,9 +78,9 @@ const UploadModal = () => {
                                     <span className=''>or drag and drop</span></p>
                                 <p className='text-xs text-zinc-500'>File up to 4MB</p>
                             </div>}
-                            {acceptedFiles && acceptedFiles[0] && (
+                            {acceptedFiles && acceptedFiles[0] && !isUploading && (
                                 <div className='bg-white flex h-full w-full items-center justify-center overflow-hidden outline outline-[1px]'>
-                                    <div className=' flex flex-1 items-center justify-center h-full w-full max-w-xs place-items-center'>
+                                    <div className=' flex items-center justify-center flex-1 w-full max-w-xs place-items-center'>
                                         <div className='flex items-center truncate border'>
                                             <File className='w-12 h-12 text-blue-800' />
                                             <p className='p-2 truncate text-blue-700' >{acceptedFiles[0].name}</p>
@@ -61,8 +90,9 @@ const UploadModal = () => {
                             )}
 
                             {isUploading && (
-                                <div className='w-full h-[100px] max-w-xs mx-auto flex items-start place-items-start'>
-                                    <Progress value={progress} className='h-[4px]' />
+                                <div className='w-full pb-24 h-[300px] bg-white border border-black mx-auto flex items-center flex-col gap-4 justify-center place-items-center'>
+                                    <div className='text-zinc-700 font-semibold'>Uploading Your file..</div>
+                                    <Progress value={progress} className='h-[4px] w-[90%] mx-auto' />
                                 </div>
                             )}
                         </label>
