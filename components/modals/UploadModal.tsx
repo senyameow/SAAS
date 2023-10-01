@@ -3,14 +3,18 @@ import React, { useCallback, useState } from 'react'
 import { Modal } from '../ui/Modal'
 import { useModalStore } from '@/hooks/use-modal-store'
 import Dropzone from 'react-dropzone'
-import { Cloud, File, Plus } from 'lucide-react'
+import { Cloud, File, Loader2, Plus } from 'lucide-react'
 import { Progress } from '../ui/progress'
 import { useUploadThing } from '@/lib/uploadthing'
 import toast from 'react-hot-toast'
 import { File as FileType } from '@prisma/client'
+import { trpc } from '@/app/_trpc/client'
+import { useRouter } from 'next/navigation'
+import { cn } from '@/lib/utils'
 
 const UploadModal = () => {
 
+    const router = useRouter()
 
     const [isUploading, setIsUploading] = useState(false)
     const [progress, setProgress] = useState(0)
@@ -25,7 +29,6 @@ const UploadModal = () => {
         const interval = setInterval(() => {
             setProgress((prev) => {
                 if (prev >= 95) {
-                    prev - 3
                     clearInterval(interval)
                     return prev
                 }
@@ -40,7 +43,6 @@ const UploadModal = () => {
         onClientUploadComplete: () => {
             toast.success(`you successfully uploaded the file!`)
             setProgress(100)
-            setIsUploading(false)
         },
         onUploadError: () => {
             toast.error(`something went wrong =( `)
@@ -48,6 +50,16 @@ const UploadModal = () => {
         onUploadBegin: () => {
             setIsUploading(true)
         }
+    })
+
+    const { mutate: getFile } = trpc.getFile.useMutation({
+        onSuccess: (file) => {
+            onClose()
+            router.push(`/dashboard/${file.id}`)
+            setIsUploading(false)
+        },
+        retry: true,
+        retryDelay: 500
     })
 
     // const onDrop = useCallback((acceptedFile: FileType) => {
@@ -64,9 +76,14 @@ const UploadModal = () => {
 
                 const res = await startUpload(acceptedFile)
 
-                if (!res) toast.error(`something went wrong`)
+                if (!res || res.length === 0) toast.error(`something went wrong`)
+                const [fileRes] = res!
+                const key = fileRes.key
+                if (!key) toast.error(`something went wrong`)
 
                 clearInterval(progressInterval)
+
+                getFile({ key })
             }} >
                 {({ getRootProps, getInputProps, acceptedFiles }) => (
                     <div {...getRootProps()} className='h-[300px] border border-dashed rounded-lg'>
@@ -92,8 +109,16 @@ const UploadModal = () => {
                             {isUploading && (
                                 <div className='w-full pb-24 h-[300px] bg-white border border-black mx-auto flex items-center flex-col gap-4 justify-center place-items-center'>
                                     <div className='text-zinc-700 font-semibold'>Uploading Your file..</div>
-                                    <Progress value={progress} className='h-[4px] w-[90%] mx-auto' />
+                                    <Progress indicatorColor={progress === 100 ? 'bg-green-500' : ''} value={progress} className={cn(`h-[4px] w-[90%] mx-auto`)} />
+                                    {progress === 100 && (
+                                        <div className='flex items-center text-zinc-700 flex-col gap-1 bg-white w-full'>
+                                            <Loader2 className='w-4 h-4 animate-spin' />
+                                            <span>redirecting...</span>
+                                        </div>
+
+                                    )}
                                 </div>
+
                             )}
                         </label>
                     </div>

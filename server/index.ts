@@ -46,27 +46,50 @@ export const appRouter = router({
 
     deleteFile: privateProcedure.input(z.object({
         id: z.string().min(1, ' ')
-    }))
-        .mutation(async ({ ctx, input }) => {
-            const { userId } = ctx
-            const { id } = input
+    })).mutation(async ({ ctx, input }) => {
+        const { userId } = ctx
+        const { id } = input
 
-            const file = await db.file.findFirst({
-                where: {
-                    id,
-                    userId
-                }
-            })
-
-            if (!file) throw new TRPCError({ code: `NOT_FOUND` })
-
-            await db.file.delete({
-                where: {
-                    id,
-                    userId
-                }
-            })
+        const file = await db.file.findFirst({
+            where: {
+                id,
+                userId
+            }
         })
+
+        if (!file) throw new TRPCError({ code: `NOT_FOUND` })
+
+        await db.file.delete({
+            where: {
+                id,
+                userId
+            }
+        })
+    }),
+
+    getFile: privateProcedure.input(z.object({
+        key: z.string().min(1, ' ')
+    })).mutation(async ({ ctx, input }) => {
+        const { userId } = ctx
+        const { key } = input
+
+        if (!userId) throw new TRPCError({ code: 'UNAUTHORIZED' })
+        if (!key) throw new TRPCError({ code: 'BAD_REQUEST' })
+
+        const file = await db.file.findFirst({
+            where: {
+                key,
+                userId
+            }
+        })
+
+        if (!file) throw new TRPCError({ code: 'NOT_FOUND' })
+
+        return file
+
+    })
+
+
 });
 
 export type AppRouter = typeof appRouter;

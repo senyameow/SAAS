@@ -1,3 +1,4 @@
+import { db } from "@/lib/db";
 import { auth } from "@clerk/nextjs";
 import { getKindeServerSession } from "@kinde-oss/kinde-auth-nextjs/server";
 import { createUploadthing, type FileRouter } from "uploadthing/next";
@@ -15,13 +16,31 @@ const handleAuth = () => {
 // FileRouter for your app, can contain multiple FileRoutes
 export const ourFileRouter = {
 
-    FreePlan: f({ pdf: { maxFileSize: '32MB', maxFileCount: 1 } })
+    FreePlan: f({ pdf: { maxFileSize: '4MB', maxFileCount: 1 } })
         .middleware(() => handleAuth())
-        .onUploadComplete(async ({ metadata, file }) => { }),
+        .onUploadComplete(async ({ metadata, file }) => {
+            const pdf = await db.file.create({
+                data: {
+                    key: file.key,
+                    name: file.name,
+                    url: file.url,
+                    userId: metadata.userId
+                }
+            })
+        }),
 
     ProPlan: f({ pdf: { maxFileSize: '16MB', maxFileCount: 1 } })
         .middleware(() => handleAuth())
-        .onUploadComplete(async ({ metadata, file }) => { }),
+        .onUploadComplete(async ({ metadata, file }) => {
+            const pdf = await db.file.create({
+                data: {
+                    key: file.key,
+                    name: file.name,
+                    url: file.url,
+                    userId: metadata.userId
+                }
+            })
+        }),
 
 
 } satisfies FileRouter;
