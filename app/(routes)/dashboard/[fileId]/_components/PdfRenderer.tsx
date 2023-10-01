@@ -15,6 +15,7 @@ import * as z from 'zod'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Form } from '@/components/ui/form';
+import Zoom from './Zoom';
 
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`
@@ -28,8 +29,6 @@ interface PdfRendererProps {
 
 
 const PdfRenderer = ({ url, name }: PdfRendererProps) => {
-
-
 
     const [numPages, setNumPages] = useState<number>();
     const [pageNumber, setPageNumber] = useState<number>(1);
@@ -66,10 +65,12 @@ const PdfRenderer = ({ url, name }: PdfRendererProps) => {
         setValue('page', String(values.page))
     }
 
+    const [zoom, setZoom] = useState(1)
+
     return (
         <div className='w-full bg-white rounded-md shadow flex flex-col items-center h-full'>
             <div className='h-14 w-full border-b border-zinc-200 flex items-center max-h-screen justify-between px-2'>
-                <div className='flex items-center gap-2 py-2'>
+                <div className='flex items-center gap-2 py-2 w-full'>
                     <Button onClick={onPageDown} variant={'ghost'}>
                         <ChevronDown className='w-4 h-4' />
                     </Button>
@@ -83,6 +84,9 @@ const PdfRenderer = ({ url, name }: PdfRendererProps) => {
                     <Button disabled={numPages === undefined} onClick={onPageUp} variant={'ghost'}>
                         <ChevronUp className='w-4 h-4' />
                     </Button>
+                    <div className='ml-auto flex items-center gap-2 w-full justify-end'>
+                        <Zoom setZoom={setZoom} zoom={zoom} />
+                    </div>
                 </div>
             </div>
             <div className='flex-1 w-full max-h-full border border-zinc-200'>
