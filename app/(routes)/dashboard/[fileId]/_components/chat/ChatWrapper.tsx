@@ -21,7 +21,7 @@ const ChatWrapper = ({ fileId }: { fileId: string }) => {
                 {!isLoading && data?.status === 'FAILED' && <ChatProcessing status='FAILED' />}
                 {!isLoading && data?.status === 'SUCCESS' && <Messages />}
             </div>
-            <ChatInput isDisabled={isLoading} />
+            <ChatInput fileId={fileId} isDisabled={isLoading} />
         </div>
     )
 }

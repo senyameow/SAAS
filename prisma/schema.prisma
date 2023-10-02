@@ -28,8 +28,9 @@ model User {
 
   File File[]
 
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
+  created_at DateTime  @default(now())
+  updated_at DateTime  @updatedAt
+  Message    Message[]
 }
 
 model File {
@@ -40,11 +41,28 @@ model File {
 
   uploadStatus UploadStatus @default(PENDING)
 
+  userId  String
+  user    User      @relation(fields: [userId], references: [id])
+  Message Message[]
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@index([userId])
+}
+
+model Message {
+  id            String  @id @default(uuid())
+  content       String  @db.Text
+  isUserMessage Boolean
+
+  fileId String
+  file   File   @relation(fields: [fileId], references: [id])
   userId String
   user   User   @relation(fields: [userId], references: [id])
 
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
 
-  @@index([userId])
+  @@index([fileId, userId])
 }
