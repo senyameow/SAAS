@@ -1,6 +1,6 @@
 import { create } from 'zustand'
 
-export type ModalType = 'uploadModal'
+export type ModalType = 'uploadModal' | 'pdfModal'
 
 interface ModalData {
 }

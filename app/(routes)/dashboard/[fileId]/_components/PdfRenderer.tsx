@@ -1,5 +1,5 @@
 'use client'
-import { ArrowDown, ArrowUp, ChevronDown, ChevronUp, Loader2 } from 'lucide-react'
+import { ArrowDown, ArrowUp, ChevronDown, ChevronUp, Expand, Loader2, RotateCcw } from 'lucide-react'
 import React, { useCallback, useState } from 'react'
 
 import 'react-pdf/dist/Page/AnnotationLayer.css';
@@ -19,6 +19,7 @@ import Zoom from './Zoom';
 import SimpleBar from 'simplebar-react'
 
 import QuickPinchZoom, { make3dTransformValue } from "react-quick-pinch-zoom";
+import { useModalStore } from '@/hooks/use-modal-store';
 
 
 
@@ -38,6 +39,8 @@ type onUpdateType = {
 
 
 const PdfRenderer = ({ url, name }: PdfRendererProps) => {
+
+    const { onOpen, data } = useModalStore()
 
     const [numPages, setNumPages] = useState<number>();
     const [pageNumber, setPageNumber] = useState<number>(1);
@@ -90,6 +93,16 @@ const PdfRenderer = ({ url, name }: PdfRendererProps) => {
         }
     }, []);
 
+    const [degree, setDegree] = useState(0)
+
+    const onRotate = () => {
+        if (degree == 360) {
+            setDegree(0)
+        }
+        setDegree(prev => prev - 90)
+        console.log(degree)
+    }
+
 
     return (
         <div className='w-full bg-white rounded-md shadow flex flex-col items-center h-full'>
@@ -98,7 +111,7 @@ const PdfRenderer = ({ url, name }: PdfRendererProps) => {
                     <Button onClick={onPageDown} variant={'ghost'}>
                         <ChevronDown className='w-4 h-4' />
                     </Button>
-                    <Input {...register('page')} onKeyDown={e => {
+                    <Input value={pageNumber} {...register('page')} onKeyDown={e => {
                         if (e.key === 'Enter') {
                             handleSubmit(onSubmit)()
                         }
@@ -110,6 +123,12 @@ const PdfRenderer = ({ url, name }: PdfRendererProps) => {
                     </Button>
                     <div className='ml-auto flex items-center gap-2 w-full justify-end'>
                         <Zoom setZoom={setZoom} zoom={zoom} />
+                        <Button onClick={onRotate} variant={'ghost'}>
+                            <RotateCcw className='w-4 h-4' />
+                        </Button>
+                        <Button variant={'ghost'} onClick={() => onOpen(`pdfModal`, {})}>
+                            <Expand className='w-4 h-4' />
+                        </Button>
                     </div>
                 </div>
             </div>
@@ -126,7 +145,7 @@ const PdfRenderer = ({ url, name }: PdfRendererProps) => {
                                     toast.error('loading error.. try again')
                                 }}
                             >
-                                <Page scale={zoom} height={height ? height : 1} pageNumber={pageNumber} width={width ? width : 1} />
+                                <Page rotate={degree} scale={zoom} height={height ? height : 1} pageNumber={pageNumber} width={width ? width : 1} />
                             </Document>
 
                         </div>
