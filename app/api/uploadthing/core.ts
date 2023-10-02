@@ -24,7 +24,8 @@ export const ourFileRouter = {
                     key: file.key,
                     name: file.name,
                     url: file.url,
-                    userId: metadata.userId
+                    userId: metadata.userId,
+                    uploadStatus: 'PROCESSING'
                 }
             })
         }),
@@ -37,7 +38,8 @@ export const ourFileRouter = {
                     key: file.key,
                     name: file.name,
                     url: file.url,
-                    userId: metadata.userId
+                    userId: metadata.userId,
+                    uploadStatus: 'PROCESSING'
                 }
             })
         }),

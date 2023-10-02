@@ -29,7 +29,7 @@ const page = async ({ params }: { params: { fileId: string } }) => {
                     <PdfRenderer url={file.url} name={file.name} />
                 </div>
                 <div className='border h-full shrink-0 flex-[0.7] lg:w-96'>
-                    <ChatWrapper />
+                    <ChatWrapper fileId={file.id} />
                 </div>
             </div>
         </MaxWidthWrapper>
