@@ -38,7 +38,7 @@ const Pdf = ({ degree, zoom, height, pageNumber, url, width, numPages, setNumPag
             {fullDoc && (
                 <div>
                     {new Array(numPages).fill(0).map((_, index) => (
-                        <Page pageIndex={index} height={height ? height : 1} width={width ? width : 1} />
+                        <Page key={index} pageIndex={index} height={height ? height : 1} width={width ? width : 1} />
                     ))}
                 </div>
             )}

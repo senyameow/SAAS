@@ -4,7 +4,7 @@ import { getKindeServerSession } from '@kinde-oss/kinde-auth-nextjs/server'
 import { notFound, redirect } from 'next/navigation'
 import React from 'react'
 import PdfRenderer from './_components/PdfRenderer'
-import ChatWrapper from './_components/ChatWrapper'
+import ChatWrapper from './_components/chat/ChatWrapper'
 
 const page = async ({ params }: { params: { fileId: string } }) => {
 
