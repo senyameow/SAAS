@@ -10,9 +10,6 @@ export async function POST(req: Request, { params }: { params: { fileId: string 
         const { getUser } = getKindeServerSession()
         const user = getUser()
 
-        console.log(user)
-        console.log(params?.fileId)
-
         const { content } = await req.json()
 
         if (!content) return new NextResponse('No message provided', { status: 401 })

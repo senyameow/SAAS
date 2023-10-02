@@ -71,7 +71,6 @@ const ChatInput = ({ isDisabled, fileId }: ChatInputProps) => {
                                         autoFocus
                                         placeholder={`put your message in here..`}
                                         {...field} disabled={isDisabled} className='px-4 rounded-xl focus-visible:ring-0 ring-offset-0 focus-visible:ring-offset-0 py-6 dark:bg-zinc-700/60 text-zinc-600 dark:text-zinc-200 border' />
-                                    {/* и небольшой смайлик, для модалки со смайлами */}
                                     <div className='absolute right-6 top-5'>
                                         <Button disabled={form.formState.isSubmitting} type='submit' className='p-3 h-fit rounded-full'>
                                             <Send className='w-4 h-4' />
