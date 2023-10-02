@@ -20,6 +20,7 @@ import SimpleBar from 'simplebar-react'
 
 import QuickPinchZoom, { make3dTransformValue } from "react-quick-pinch-zoom";
 import { useModalStore } from '@/hooks/use-modal-store';
+import Pdf from '@/components/Pdf';
 
 
 
@@ -58,10 +59,6 @@ const PdfRenderer = ({ url, name }: PdfRendererProps) => {
 
     const { width, ref, height } = useResizeDetector()
 
-    function onDocumentLoadSuccess({ numPages }: { numPages: number }): void {
-        setNumPages(numPages);
-    }
-
     const onPageDown = () => {
         setPageNumber(prev => (prev - 1 >= 1 ? prev - 1 : prev))
         console.log(pageNumber)
@@ -72,7 +69,6 @@ const PdfRenderer = ({ url, name }: PdfRendererProps) => {
     }
 
     const onSubmit = (values: z.infer<typeof inputSchema>) => {
-        console.log('ZCXC')
         setPageNumber(Number(values.page))
         setValue('page', String(values.page))
     }
@@ -126,7 +122,7 @@ const PdfRenderer = ({ url, name }: PdfRendererProps) => {
                         <Button onClick={onRotate} variant={'ghost'}>
                             <RotateCcw className='w-4 h-4' />
                         </Button>
-                        <Button variant={'ghost'} onClick={() => onOpen(`pdfModal`, {})}>
+                        <Button variant={'ghost'} onClick={() => onOpen(`pdfModal`, { pageNumber, url, setNumPages, numPages })}>
                             <Expand className='w-4 h-4' />
                         </Button>
                     </div>
@@ -136,17 +132,8 @@ const PdfRenderer = ({ url, name }: PdfRendererProps) => {
                 <SimpleBar autoHide={false} className='max-h-[calc(100vh-10rem)]'>
                     <QuickPinchZoom onUpdate={onUpdate}>
                         <div ref={ref} className='border-b max-h-full'>
-                            <Document file={url} onLoadSuccess={onDocumentLoadSuccess} className={`h-full border-b`} loading={
-                                <div className='flex items-center justify-center max-h-full'>
-                                    <Loader2 className='w-6 h-6 animate-spin' />
-                                </div>
-                            }
-                                onError={() => {
-                                    toast.error('loading error.. try again')
-                                }}
-                            >
-                                <Page rotate={degree} scale={zoom} height={height ? height : 1} pageNumber={pageNumber} width={width ? width : 1} />
-                            </Document>
+
+                            <Pdf pageNumber={pageNumber} url={url} degree={degree} height={height} width={width} setNumPages={setNumPages} numPages={numPages!} />
 
                         </div>
                     </QuickPinchZoom>

@@ -1,8 +1,14 @@
+import { Dispatch, SetStateAction } from 'react';
 import { create } from 'zustand'
 
 export type ModalType = 'uploadModal' | 'pdfModal'
 
 interface ModalData {
+    pageNumber?: number;
+    url?: string;
+    degree?: number;
+    setNumPages?: Dispatch<SetStateAction<number | undefined>>;
+    numPages?: number
 }
 
 interface useModalStoreProps {
